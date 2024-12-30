@@ -31,7 +31,7 @@ module.exports = defineConfig({
     trace: 'on-first-retry',
     video: 'on',
     screenshot: 'on',
-    headless:false
+    headless:true
   },
 
   /* Configure projects for major browsers */
