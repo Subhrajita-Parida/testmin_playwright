@@ -1,0 +1,14 @@
+{
+    "companySection":{
+        "text" : "About"
+    },
+
+    "customerSection":{
+        "name" : "Micah L"
+    },
+
+    "footerSection":{
+        "attribute": "href",
+        "link" : "privacy-policy"
+    }
+}
