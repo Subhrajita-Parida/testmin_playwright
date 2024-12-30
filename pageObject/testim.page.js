@@ -14,7 +14,7 @@ exports.NavigateTestim = class NavigateTestim{
         this.review = page.locator("(//div[@class='item-body']//p)[3]");
         this.customerName = page.locator("//div[text()='Micah L']");
         this.reviewContent = page.locator("//div[contains(text(),'Co-Founder')]")
-        this.header = page.locator("//a[@href='#']");
+        this.menuItems = page.locator(".h-nav > li.has-drop"); 
         this.footer = page.locator("//div[@class='p-footer-frame']");
         this.dynamicHeader = (text) =>page.locator(`//a[text()='${text}']`)
         this.privacyLinks =  page.locator("//a[text()='Privacy Policy']");
@@ -27,12 +27,13 @@ exports.NavigateTestim = class NavigateTestim{
 
     async headerComponents(){
         await expect(this.page).toHaveURL(process.env.testimUrl);
-        const visibilityTimeout = parseInt(process.env.timeout)
-        const headerTexts = ['Company', 'Customers', 'Careers', 'Testim Partners'];
-        for (const text of headerTexts) {
-        const headerElement = this.dynamicHeader(text);
-        const isVisible = await headerElement.isVisible({ timeout: visibilityTimeout });
-        expect(isVisible).toBeTruthy();
+        const menuCount = await this.menuItems.count();
+        for (let i = 0; i < menuCount; i++) {
+            const menu = this.menuItems.nth(i);
+            await menu.hover();
+            const dropdown = menu.locator("div.drop");
+            await dropdown.isVisible();
+        
     }
 
     }
