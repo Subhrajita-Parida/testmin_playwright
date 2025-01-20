@@ -1,8 +1,10 @@
 const {expect} = require('@playwright/test');
 require('dotenv').config();
-const data = require('../data/data.json')
+const data = require('../data/data.json');
+const { assertWithAllureStep } = require('../utils/helper');
 
 exports.NavigateTestim = class NavigateTestim{
+    
     constructor(page){
         this.page = page;
         this.logo = page.locator("//img[@alt='Tricentis Testim Logo']");
@@ -18,57 +20,74 @@ exports.NavigateTestim = class NavigateTestim{
         this.footer = page.locator("//div[@class='p-footer-frame']");
         this.dynamicHeader = (text) =>page.locator(`//a[text()='${text}']`)
         this.privacyLinks =  page.locator("//a[text()='Privacy Policy']");
-
     }
 
-    async checkUrl(){
+    async navigateToURL(){
         await this.page.goto(process.env.testimUrl);
     }
 
-    async headerComponents(){
-        await expect(this.page).toHaveURL(process.env.testimUrl);
-        const menuCount = await this.menuItems.count();
+    async validateHeaderComponents(){
+        await assertWithAllureStep('Validation of page Url',async()=>{
+            await expect(this.page).toHaveURL(process.env.testimUrl);
+            const menuCount = await this.menuItems.count();
         for (let i = 0; i < menuCount; i++) {
             const menu = this.menuItems.nth(i);
             await menu.hover();
             const dropdown = menu.locator("div.drop");
             await dropdown.isVisible();
+    }
+        })
         
     }
 
-    }
-
-    async companySection(){
+    async validateCompanySection(){
         await this.companyText.click();
-        await expect(this.aboutText).toContainText(data.companySection.text);
-        expect(this.customers).toBeVisible()
-        await expect(this.careers).not.toBeHidden();
-        const isVisible= await this.testimPartners.isVisible();
-        expect(isVisible).toBeTruthy();
+        await assertWithAllureStep('Validation of about text',async()=>{
+            await expect(this.aboutText).toContainText(data.companySection.text);
+            expect(this.customers).toBeVisible()
+        })
+        await assertWithAllureStep('Careers text is not hidden',async()=>{
+            await expect(this.careers).not.toBeHidden();
+        })
+        await assertWithAllureStep('Testim Partners is visible',async()=>{
+            const isVisible= await this.testimPartners.isVisible();
+            expect(isVisible).toBeTruthy();
+        })
+        
        
     }
 
-    async customerSection(){
-       await this.customers.click();
-       await expect(this.page).toHaveURL(process.env.customerUrl);
-       await this.review.click();
-       await expect(this.customerName).toHaveText(data.customerSection.name);
-       const reviewDetails = {
-       customerName: await this.customerName.textContent(),
-       reviewContent: await this.reviewContent.textContent(),
-       };
-       const displayedName = await this.customerName.textContent();
-       const displayedContent = await this.reviewContent.textContent();
-       expect(displayedName).toBe(reviewDetails.customerName);
-       expect(displayedContent).toBe(reviewDetails.reviewContent);
+    async validatecustomerSection(){
+       await assertWithAllureStep('Validating the customer page url', async()=>{
+        await this.customers.click();
+        await expect(this.page).toHaveURL(process.env.customerUrl);
+        await this.review.click();
+       })
+       await assertWithAllureStep('validating custumer name is having text',async()=>{
+        await expect(this.customerName).toHaveText(data.customerSection.name);
+       })
+       await assertWithAllureStep('Retreive and review customer name and content from data', async()=>{
+        const reviewDetails = {
+            customerName: await this.customerName.textContent(),
+            reviewContent: await this.reviewContent.textContent(),
+            };
+            const displayedName = await this.customerName.textContent();
+        expect(displayedName).toBe(reviewDetails.customerName,'Comparing the retreived name with actual name');
+        const displayedContent = await this.reviewContent.textContent();
+        expect(displayedContent).toBe(reviewDetails.reviewContent,'Comparing the review content with actual name');
+       })
     }
     
 
     async validateFooter(){
+      await assertWithAllureStep('Checking the footer visibilty',async()=>{
         await this.footer.scrollIntoViewIfNeeded();
         const isVisible = await this.footer.isVisible();
         expect(isVisible).toBeTruthy();
-        const privacyHref = await this.privacyLinks.getAttribute(data.footerSection.attribute);
-        expect(privacyHref).toContain(data.footerSection.link);
+        })
+      await assertWithAllureStep('Validating the privacy content text',async()=>{
+          const privacyHref = await this.privacyLinks.getAttribute(data.footerSection.attribute);
+            expect(privacyHref).toContain(data.footerSection.link);
+        })
     }
 }

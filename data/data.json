@@ -10,5 +10,40 @@
     "footerSection":{
         "attribute": "href",
         "link" : "privacy-policy"
+    },
+
+    "bookingApp":{
+        "appLogo": "Booking.com",
+        "applicationTitle": "Booking.com | Official site | The best hotels, flights, car rentals & accommodations",
+        "placeText": "Popular destinations nearby",
+        "destination": "Coorg",
+        "txtProperty": "Property Type"
+    },
+
+    "facilitiesToCheck": [
+    { "name": "Parking", "text": "Parking" },
+    { "name": "Restaurant", "text": "Restaurant" },
+    { "name": "Pet Friendly", "text": "Pet friendly" },
+    { "name": "Room Service", "text": "Room service" }
+  ],
+
+  "youtubeApp":{
+    "query": "Selenium tutorial",
+    "appTitle": "YouTube"
+  },
+
+  "targetApp":{
+    "input" : "watches",
+    "watch" : {
+        "title" : "Disney Citizen Eco-Drive Watch",
+        "offerPrice" : "$337.50",
+        "discount" : "112.50"
     }
+  },
+
+  "headerComponents": ["Target home", "Account, sign in" , "cart 0 items" ],
+   "locators" : ["product-price", "product-savings-amount"]
+  
+  
+     
 }
